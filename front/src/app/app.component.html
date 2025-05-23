@@ -14,7 +14,7 @@
       <button mat-button routerLink="/themes" routerLinkActive="active">Thèmes</button>
       <button mat-button [matMenuTriggerFor]="userMenu">
         <mat-icon>account_circle</mat-icon>
-        {{ currentUser?.firstName || 'Utilisateur' }}
+        {{ currentUser?.username || 'Utilisateur' }}
       </button>
       <mat-menu #userMenu="matMenu">
         <button mat-menu-item routerLink="/profile">

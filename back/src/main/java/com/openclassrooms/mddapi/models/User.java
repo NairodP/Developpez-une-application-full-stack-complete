@@ -15,11 +15,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "prenom", nullable = false)
-    private String firstName;
-
-    @Column(name = "nom", nullable = false)
-    private String lastName;
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -54,12 +51,11 @@ public class User {
     }
 
     public String getUsername() {
-        // Utilisons l'email comme nom d'utilisateur puisque la table n'a pas de colonne username
-        return email;
+        return username;
     }
 
     public void setUsername(String username) {
-        // Cette méthode ne fait rien car nous utilisons l'email comme identifiant
+        this.username = username;
     }
 
     public String getEmail() {
@@ -78,21 +74,7 @@ public class User {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    // Les méthodes firstName et lastName ne sont plus utilisées car nous avons maintenant un seul champ username
 
     public String getBio() {
         // Cette propriété n'est pas dans le schéma de BDD

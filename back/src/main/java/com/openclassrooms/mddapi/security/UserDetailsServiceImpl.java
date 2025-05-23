@@ -9,21 +9,30 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Dans notre application, username est en fait l'email
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec l'email: " + username));
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        // identifier peut être un email ou un username
+        Optional<User> userByEmail = userRepository.findByEmail(identifier);
+        Optional<User> userByUsername = userRepository.findByUsername(identifier);
+        
+        User user = userByEmail.orElseGet(() -> 
+                    userByUsername.orElseThrow(() -> 
+                        new UsernameNotFoundException("Utilisateur non trouvé avec l'identifiant: " + identifier)));
 
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),  // utiliser l'email comme identifiant
+                user.getEmail(),  // Toujours utiliser l'email comme identifiant principal
                 user.getPassword(),
                 new ArrayList<>());
     }

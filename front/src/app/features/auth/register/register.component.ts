@@ -21,8 +21,7 @@ export class RegisterComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.registerForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
@@ -42,14 +41,13 @@ export class RegisterComponent implements OnInit {
 
     this.isLoading = true;
     const signupData = {
-      firstName: this.registerForm.value.firstName,
-      lastName: this.registerForm.value.lastName,
+      username: this.registerForm.value.username,
       email: this.registerForm.value.email,
       password: this.registerForm.value.password
     };
 
     this.authService.register(signupData).subscribe({
-      next: () => {
+      next: (response) => {
         this.isLoading = false;
         this.snackBar.open('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'Fermer', {
           duration: 5000
@@ -58,7 +56,9 @@ export class RegisterComponent implements OnInit {
       },
       error: error => {
         this.isLoading = false;
-        this.snackBar.open('Échec de l\'inscription. Veuillez réessayer.', 'Fermer', {
+        // Vérifier si l'erreur est un message du serveur
+        const errorMessage = error.error ?? 'Échec de l\'inscription. Veuillez réessayer.';
+        this.snackBar.open(errorMessage, 'Fermer', {
           duration: 3000
         });
         console.error('Erreur d\'inscription', error);

@@ -2,8 +2,6 @@ export interface User {
   id?: number;
   username: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
   bio?: string;
   profilePictureUrl?: string;
   createdAt?: Date;
@@ -15,13 +13,12 @@ export interface AuthResponse {
 }
 
 export interface LoginRequest {
-  email: string;
+  identifier: string; // peut être email ou username
   password: string;
 }
 
 export interface SignupRequest {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  username: string;
 }

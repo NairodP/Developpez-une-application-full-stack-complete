@@ -40,10 +40,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
         try {
-            // Utiliser l'email comme identifiant de connexion
-            String email = loginRequest.getEmail();
-            authenticate(email, loginRequest.getPassword());
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            // L'identifiant peut être un email ou un username
+            String identifier = loginRequest.getIdentifier();
+            authenticate(identifier, loginRequest.getPassword());
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(identifier);
             final String token = jwtTokenUtil.generateToken(userDetails);
             return ResponseEntity.ok(new JwtResponse(token));
         } catch (Exception e) {
@@ -53,16 +53,20 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody SignupRequest signupRequest) {
-        // Vérifie si l'email est déjà utilisé (nous utilisons l'email comme nom d'utilisateur)
+        // Vérifie si l'email est déjà utilisé
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             return ResponseEntity.badRequest().body("Email déjà utilisé");
+        }
+        
+        // Vérifie si le nom d'utilisateur est déjà utilisé
+        if (userRepository.existsByUsername(signupRequest.getUsername())) {
+            return ResponseEntity.badRequest().body("Nom d'utilisateur déjà utilisé");
         }
 
         User user = new User();
         user.setEmail(signupRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        user.setFirstName(signupRequest.getFirstName());
-        user.setLastName(signupRequest.getLastName());
+        user.setUsername(signupRequest.getUsername());
         // La bio n'est pas supportée dans notre schéma actuel
 
         userRepository.save(user);

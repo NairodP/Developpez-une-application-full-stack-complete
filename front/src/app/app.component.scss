@@ -1,0 +1,50 @@
+.toolbar-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  
+  .toolbar-logo {
+    height: 32px;
+    margin-right: 10px;
+  }
+  
+  .app-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.toolbar-links {
+  display: flex;
+  align-items: center;
+  
+  button.active {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.content-with-toolbar {
+  margin-top: 64px; // Adapter selon la taille de la barre
+  min-height: calc(100vh - 64px);
+}
+
+.content-full {
+  min-height: 100vh;
+}
+
+// Responsive
+@media (max-width: 599px) {
+  .content-with-toolbar {
+    margin-top: 56px;
+    min-height: calc(100vh - 56px);
+  }
+}

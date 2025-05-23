@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   register(signupData: SignupRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, signupData);
+    return this.http.post(`${this.apiUrl}/register`, signupData, { responseType: 'text' });
   }
 
   logout(): void {

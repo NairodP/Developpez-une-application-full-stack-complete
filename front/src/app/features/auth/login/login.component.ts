@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      identifier: ['', Validators.required], // Changé de email à identifier
       password: ['', Validators.required]
     });
   }
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 
     this.isLoading = true;
     const loginData = {
-      email: this.loginForm.value.email,
+      identifier: this.loginForm.value.identifier,
       password: this.loginForm.value.password
     };
 

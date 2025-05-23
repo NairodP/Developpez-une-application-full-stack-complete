@@ -19,17 +19,8 @@ export class HomeComponent implements OnInit {
     this.isLoggedIn = this.authService.isLoggedIn();
     
     if (this.isLoggedIn) {
-      // Charger les données de l'utilisateur si ce n'est pas déjà fait
-      if (!this.authService.currentUserValue) {
-        this.authService.loadCurrentUser();
-      }
+      // Rediriger vers la page des posts si déjà connecté
+      this.router.navigate(['/posts']);
     }
   }
-
-  start() {
-    if (this.isLoggedIn) {
-      this.router.navigate(['/posts']);
-    } else {
-      this.router.navigate(['/auth/login']);
-    }
 }

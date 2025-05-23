@@ -8,54 +8,49 @@
   padding: 1rem;
   
   .logo {
-    width: 140px;
-    margin-bottom: 1.5rem;
-  }
-  
-  h1 {
-    font-size: 2rem;
+    width: 120px;
     margin-bottom: 2rem;
-    color: #333;
-    font-weight: 500;
   }
   
-  .action-buttons {
+  .auth-buttons {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
     gap: 1rem;
     
-    button {
-      min-width: 180px;
-      min-height: 45px;
-      border-radius: 22px;
+    @media (max-width: 599px) {
+      flex-direction: column;
     }
     
-    .auth-buttons {
-      display: flex;
-      flex-direction: row;
-      gap: 1rem;
-      margin-top: 0.5rem;
+    button {
+      min-width: 120px;
+      min-height: 36px;
+      border-radius: 18px;
+      background-color: white;
+      border: 1px solid #673AB7;
+      color: #673AB7;
       
-      @media (max-width: 599px) {
-        flex-direction: column;
+      &:first-child {
+        background-color: white;
+      }
+      
+      &:last-child {
+        background-color: white;
       }
     }
   }
 }
 
+// Styles pour les écrans plus grands
 @media (min-width: 600px) {
   .center {
     .logo {
-      width: 180px;
+      width: 150px;
     }
     
-    h1 {
-      font-size: 2.5rem;
-    }
-    
-    button {
-      min-width: 200px;
+    .auth-buttons {
+      button {
+        min-width: 150px;
+      }
     }
   }
 }

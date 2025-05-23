@@ -8,17 +8,11 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Utiliser l'email comme identifiant principal
+    // Méthodes pour l'email
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
     
-    // Garder cette méthode pour rétrocompatibilité avec le code qui utilise username
-    default Optional<User> findByUsername(String username) {
-        return findByEmail(username);
-    }
-    
-    // Garder cette méthode pour rétrocompatibilité avec le code qui utilise username
-    default boolean existsByUsername(String username) {
-        return existsByEmail(username);
-    }
+    // Méthodes pour le username
+    Optional<User> findByUsername(String username);
+    boolean existsByUsername(String username);
 }
