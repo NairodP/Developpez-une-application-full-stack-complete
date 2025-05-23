@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -6,11 +8,28 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  constructor() {}
+  isLoggedIn = false;
 
-  ngOnInit(): void {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+    
+    if (this.isLoggedIn) {
+      // Charger les données de l'utilisateur si ce n'est pas déjà fait
+      if (!this.authService.currentUserValue) {
+        this.authService.loadCurrentUser();
+      }
+    }
+  }
 
   start() {
-    alert('Commencez par lire le README et à vous de jouer !');
-  }
+    if (this.isLoggedIn) {
+      this.router.navigate(['/posts']);
+    } else {
+      this.router.navigate(['/auth/login']);
+    }
 }

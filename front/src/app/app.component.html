@@ -1,1 +1,35 @@
-<router-outlet></router-outlet>
+<mat-toolbar color="primary" *ngIf="isLoggedIn">
+  <div class="toolbar-container">
+    <div class="logo-container">
+      <a routerLink="/">
+        <img src="/assets/logo_p6.png" alt="MDD Logo" class="toolbar-logo"/>
+      </a>
+      <span class="app-title">MDD</span>
+    </div>
+    
+    <div class="toolbar-spacer"></div>
+    
+    <div class="toolbar-links">
+      <button mat-button routerLink="/posts" routerLinkActive="active">Articles</button>
+      <button mat-button routerLink="/themes" routerLinkActive="active">Thèmes</button>
+      <button mat-button [matMenuTriggerFor]="userMenu">
+        <mat-icon>account_circle</mat-icon>
+        {{ currentUser?.firstName || 'Utilisateur' }}
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon>
+          <span>Profil</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Déconnexion</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</mat-toolbar>
+
+<div [ngClass]="{'content-with-toolbar': isLoggedIn, 'content-full': !isLoggedIn}">
+  <router-outlet></router-outlet>
+</div>

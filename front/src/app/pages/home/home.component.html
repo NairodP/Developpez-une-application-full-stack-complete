@@ -1,5 +1,11 @@
 <div class="center">
-  <img src="/assets/logo_p6.png" alt="logo" />
-  <h1>Welcome to MDD</h1>
-  <button mat-raised-button color="primary" (click)="start()">Commencer</button>
+  <img src="/assets/logo_p6.png" alt="logo" class="logo" />
+  <h1>Bienvenue sur MDD</h1>
+  <div class="action-buttons">
+    <button mat-raised-button color="primary" (click)="start()">Commencer</button>
+    <div *ngIf="!isLoggedIn" class="auth-buttons">
+      <button mat-stroked-button routerLink="/auth/login">Se connecter</button>
+      <button mat-button routerLink="/auth/register">S'inscrire</button>
+    </div>
+  </div>
 </div>

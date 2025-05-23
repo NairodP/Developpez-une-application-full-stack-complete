@@ -1,0 +1,41 @@
+<div class="login-container">
+  <div class="login-header">
+    <a routerLink="/">
+      <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo"/>
+    </a>
+    <h1>Se connecter</h1>
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail ou nom d'utilisateur</mat-label>
+      <input matInput formControlName="email" type="email" required>
+      <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+        L'email est requis
+      </mat-error>
+      <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+        Format d'email invalide
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" required>
+      <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+        <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+        Le mot de passe est requis
+      </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="login-button">
+      Se connecter
+    </button>
+  </form>
+
+  <div class="register-section">
+    <p>Vous n'avez pas de compte ?</p>
+    <button mat-button color="primary" (click)="navigateToRegister()">S'inscrire</button>
+  </div>
+</div>

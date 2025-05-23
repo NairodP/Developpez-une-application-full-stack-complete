@@ -15,13 +15,14 @@ public class Theme {
     @Column(name = "nom", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "description")
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @ManyToMany(mappedBy = "followedThemes")
     private Set<User> followers = new HashSet<>();
 
-    @ManyToMany(mappedBy = "themes")
+    @OneToMany(mappedBy = "theme")
     private Set<Post> posts = new HashSet<>();
 
     // Getters and Setters
