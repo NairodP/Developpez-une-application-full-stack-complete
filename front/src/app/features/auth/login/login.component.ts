@@ -15,10 +15,10 @@ export class LoginComponent implements OnInit {
   hidePassword = true;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private snackBar: MatSnackBar
+    private readonly formBuilder: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly snackBar: MatSnackBar
   ) {
     this.loginForm = this.formBuilder.group({
       identifier: ['', Validators.required], // Changé de email à identifier
