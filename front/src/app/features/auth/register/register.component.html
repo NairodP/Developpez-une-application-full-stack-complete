@@ -1,12 +1,11 @@
 <div class="register-container">
   <div class="back-button">
-    <button mat-icon-button (click)="navigateToLogin()">
+    <button mat-icon-button routerLink="/">
       <mat-icon>arrow_back</mat-icon>
     </button>
   </div>
 
   <div class="register-header">
-    <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo"/>
     <h1>Inscription</h1>
   </div>
 
@@ -35,7 +34,7 @@
       </div>
     </div>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || isLoading" class="register-button">
+    <button mat-raised-button type="submit" [disabled]="registerForm.invalid || isLoading" class="register-button">
       S'inscrire
     </button>
   </form>

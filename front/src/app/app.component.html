@@ -29,10 +29,22 @@
   </div>
 </mat-toolbar>
 
+<!-- Navbar simplifiée pour les pages d'authentification -->
+<mat-toolbar *ngIf="isAuthPage" class="auth-toolbar">
+  <div class="toolbar-container">
+    <div class="logo-container">
+      <a routerLink="/">
+        <img src="/assets/logo_p6.png" alt="MDD Logo" class="toolbar-logo" />
+      </a>
+    </div>
+    <div class="toolbar-spacer"></div>
+  </div>
+</mat-toolbar>
+
 <div
   [ngClass]="{
-    'content-with-toolbar': isLoggedIn,
-    'content-full': !isLoggedIn
+    'content-with-toolbar': isLoggedIn || isAuthPage,
+    'content-full': !isLoggedIn && !isAuthPage
   }"
 >
   <router-outlet></router-outlet>

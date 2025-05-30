@@ -1,4 +1,4 @@
-.app-toolbar {
+.app-toolbar, .auth-toolbar {
   background-color: white;
   border-bottom: 1px solid black;
 }
@@ -49,7 +49,7 @@
 }
 
 .content-with-toolbar {
-  margin-top: 64px; // Adapter selon la taille de la barre
+  margin-top: 64px;
   min-height: calc(100vh - 64px);
 }
 

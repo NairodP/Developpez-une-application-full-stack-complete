@@ -6,51 +6,27 @@
   min-height: 80vh;
   text-align: center;
   padding: 1rem;
-  
+
   .logo {
-    width: 120px;
+    width: 220px;
     margin-bottom: 2rem;
   }
-  
+
   .auth-buttons {
     display: flex;
     flex-direction: row;
-    gap: 1rem;
-    
+    gap: 2rem;
+
     @media (max-width: 599px) {
       flex-direction: column;
     }
-    
+
     button {
       min-width: 120px;
       min-height: 36px;
-      border-radius: 18px;
+      border-radius: 8px;
       background-color: white;
-      border: 1px solid #673AB7;
-      color: #673AB7;
-      
-      &:first-child {
-        background-color: white;
-      }
-      
-      &:last-child {
-        background-color: white;
-      }
-    }
-  }
-}
-
-// Styles pour les écrans plus grands
-@media (min-width: 600px) {
-  .center {
-    .logo {
-      width: 150px;
-    }
-    
-    .auth-buttons {
-      button {
-        min-width: 150px;
-      }
+      border: 1px solid black;
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { User } from './models/user.model';
 
@@ -11,11 +11,12 @@ import { User } from './models/user.model';
 export class AppComponent implements OnInit {
   title = 'MDD - Réseau social de développeurs';
   isLoggedIn = false;
+  isAuthPage = false;
   currentUser: User | null = null;
 
   constructor(
-    private authService: AuthService,
-    private router: Router
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -27,6 +28,13 @@ export class AppComponent implements OnInit {
     if (this.authService.isLoggedIn() && !this.currentUser) {
       this.authService.loadCurrentUser();
     }
+    
+    // Détecter si on est sur une page d'authentification
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.isAuthPage = event.url.includes('/auth/login') || event.url.includes('/auth/register');
+      }
+    });
   }
 
   logout(): void {
