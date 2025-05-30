@@ -1,3 +1,8 @@
+.app-toolbar {
+  background-color: white;
+  border-bottom: 1px solid black;
+}
+
 .toolbar-container {
   display: flex;
   width: 100%;
@@ -7,15 +12,9 @@
 .logo-container {
   display: flex;
   align-items: center;
-  
+
   .toolbar-logo {
-    height: 32px;
-    margin-right: 10px;
-  }
-  
-  .app-title {
-    font-size: 1.2rem;
-    font-weight: 500;
+    height: 60px;
   }
 }
 
@@ -26,9 +25,26 @@
 .toolbar-links {
   display: flex;
   align-items: center;
-  
+  gap: 8px;
+
   button.active {
-    background: rgba(255, 255, 255, 0.2);
+    color: var(--primary-color);
+  }
+
+  .logout-btn {
+    color: var(--warn-color);
+    font-weight: 400;
+  }
+
+  .profile-btn {
+    margin-left: 8px;
+
+    .mat-icon {
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+      color: #e0e0e0;
+    }
   }
 }
 
