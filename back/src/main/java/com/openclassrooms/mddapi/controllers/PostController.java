@@ -62,13 +62,26 @@ public class PostController {
         post.setAuthor(user.get());
         post.setCreatedAt(LocalDateTime.now());
 
-        // Gérer le thème unique dans notre modèle
-        if (post.getThemes() != null && !post.getThemes().isEmpty()) {
-            Theme theme = post.getThemes().iterator().next();
-            Optional<Theme> validTheme = themeRepository.findById(theme.getId());
-            if (validTheme.isPresent()) {
-                post.setTheme(validTheme.get());
+        // Gérer le thème par nom
+        if (post.getTheme() != null && post.getTheme().getName() != null && !post.getTheme().getName().trim().isEmpty()) {
+            String themeName = post.getTheme().getName().trim();
+            
+            // Chercher si le thème existe déjà
+            Optional<Theme> existingTheme = themeRepository.findByName(themeName);
+            
+            if (existingTheme.isPresent()) {
+                // Utiliser le thème existant
+                post.setTheme(existingTheme.get());
+            } else {
+                // Créer un nouveau thème
+                Theme newTheme = new Theme();
+                newTheme.setName(themeName);
+                newTheme.setDescription("Thème créé automatiquement");
+                Theme savedTheme = themeRepository.save(newTheme);
+                post.setTheme(savedTheme);
             }
+        } else {
+            return ResponseEntity.badRequest().build(); // Thème obligatoire
         }
 
         Post savedPost = postRepository.save(post);

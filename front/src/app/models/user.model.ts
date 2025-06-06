@@ -2,6 +2,7 @@ export interface User {
   id?: number;
   username: string;
   email: string;
+  password?: string; // Ajouté pour les mises à jour de profil
   bio?: string;
   profilePictureUrl?: string;
   createdAt?: Date;

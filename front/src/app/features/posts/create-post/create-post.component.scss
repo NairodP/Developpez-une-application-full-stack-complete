@@ -1,0 +1,86 @@
+.create-post-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.create-post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+
+  h1 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .back-button {
+    position: absolute;
+    left: 0;
+  }
+}
+
+.create-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .form-field {
+    width: 100%;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .theme-input {
+    width: 100%;
+  }
+
+  .content-area {
+    textarea {
+      min-height: 200px;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      min-width: 120px;
+      cursor: pointer;
+
+      &:disabled {
+        background-color: #b39ddb;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Styles pour l'autocomplétion des thèmes
+::ng-deep .mat-autocomplete-panel {
+  max-height: 200px !important;
+
+  .mat-option {
+    font-size: 14px;
+    height: 36px;
+    line-height: 36px;
+
+    &.mat-selected {
+      color: var(--primary-color);
+    }
+
+    &:hover {
+      background-color: rgba(121, 80, 221, 0.05);
+    }
+  }
+}

@@ -1,0 +1,51 @@
+.post-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-header {
+  margin-bottom: 16px;
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.post-metadata {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #666;
+}
+
+.post-content {
+  flex-grow: 1;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #444;
+  overflow: hidden;
+}
+
+.post-footer {
+  text-align: right;
+}
+
+.read-more {
+  color: #7950dd;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}

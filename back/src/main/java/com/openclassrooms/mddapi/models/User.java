@@ -1,5 +1,7 @@
 package com.openclassrooms.mddapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,12 +35,15 @@ public class User {
         joinColumns = @JoinColumn(name = "utilisateur_id"),
         inverseJoinColumns = @JoinColumn(name = "theme_id")
     )
+    @JsonIgnoreProperties({"followers", "posts"})
     private Set<Theme> followedThemes = new HashSet<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     // Getters and Setters

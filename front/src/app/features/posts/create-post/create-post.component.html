@@ -1,0 +1,52 @@
+<div class="create-post-container">
+  <div class="create-post-header">
+    <button mat-icon-button class="back-button" routerLink="/posts">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Créer un nouvel article</h1>
+  </div>
+
+  <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="create-post-form">
+    <div class="form-field">
+      <mat-form-field appearance="outline" class="theme-input">
+        <input type="text"
+               matInput
+               formControlName="themeName"
+               placeholder="Entrez ou sélectionnez un thème"
+               [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let theme of filteredThemes | async" [value]="theme.name">
+            {{theme.name}}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="postForm.get('themeName')?.invalid">
+          Un thème est requis (minimum 2 caractères)
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-field">
+      <mat-form-field appearance="outline" class="full-width">
+        <input matInput formControlName="title" placeholder="Titre de l'article" />
+        <mat-error *ngIf="postForm.get('title')?.invalid">
+          Le titre est requis (3-100 caractères)
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-field">
+      <mat-form-field appearance="outline" class="full-width content-area">
+        <textarea matInput formControlName="content" placeholder="Contenu de l'article" rows="10"></textarea>
+        <mat-error *ngIf="postForm.get('content')?.invalid">
+          Le contenu est requis (min. 10 caractères)
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-actions">
+      <button mat-raised-button type="submit" [disabled]="postForm.invalid || isSubmitting">
+        Créer
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,5 +1,7 @@
 package com.openclassrooms.mddapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,13 +28,16 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "auteur_id", nullable = false)
+    @JsonIgnoreProperties({"posts", "comments", "followedThemes", "password"})
     private User author;
 
     @ManyToOne
     @JoinColumn(name = "theme_id")
+    @JsonIgnoreProperties({"posts", "followers"})
     private Theme theme;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
 
     // Pour maintenir la compatibilité avec le code existant

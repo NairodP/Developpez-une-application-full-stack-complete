@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +24,13 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final ThemeRepository themeRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserRepository userRepository, ThemeRepository themeRepository) {
+    public UserController(UserRepository userRepository, ThemeRepository themeRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.themeRepository = themeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -74,6 +77,51 @@ public class UserController {
         user.setId(id);
         User updatedUser = userRepository.save(user);
         return ResponseEntity.ok(convertToDto(updatedUser));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<?> updateCurrentUser(@RequestBody User userUpdate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        Optional<User> userOpt = userRepository.findByEmail(currentEmail);
+        
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        User existingUser = userOpt.get();
+        
+        // Mise à jour du username avec vérification d'unicité
+        if (userUpdate.getUsername() != null && !userUpdate.getUsername().trim().isEmpty()) {
+            if (!userUpdate.getUsername().equals(existingUser.getUsername())) {
+                if (userRepository.existsByUsername(userUpdate.getUsername())) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Username déjà utilisé");
+                }
+                existingUser.setUsername(userUpdate.getUsername());
+            }
+        }
+        
+        // Mise à jour de l'email avec vérification d'unicité
+        if (userUpdate.getEmail() != null && !userUpdate.getEmail().trim().isEmpty()) {
+            if (!userUpdate.getEmail().equals(existingUser.getEmail())) {
+                if (userRepository.existsByEmail(userUpdate.getEmail())) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Email déjà utilisé");
+                }
+                existingUser.setEmail(userUpdate.getEmail());
+            }
+        }
+        
+        // Mise à jour du mot de passe avec cryptage
+        if (userUpdate.getPassword() != null && !userUpdate.getPassword().trim().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
+        }
+        
+        try {
+            User updatedUser = userRepository.save(existingUser);
+            return ResponseEntity.ok(convertToDto(updatedUser));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la mise à jour");
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,9 +21,11 @@ public class Theme {
     private String description;
 
     @ManyToMany(mappedBy = "followedThemes")
+    @JsonIgnore
     private Set<User> followers = new HashSet<>();
 
     @OneToMany(mappedBy = "theme")
+    @JsonIgnore
     private Set<Post> posts = new HashSet<>();
 
     // Getters and Setters

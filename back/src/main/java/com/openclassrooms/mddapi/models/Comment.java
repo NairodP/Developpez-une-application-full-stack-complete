@@ -1,5 +1,7 @@
 package com.openclassrooms.mddapi.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -19,10 +21,12 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "auteur_id", nullable = false)
+    @JsonIgnoreProperties({"posts", "comments", "followedThemes", "password"})
     private User author;
 
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)
+    @JsonBackReference
     private Post post;
 
     @PrePersist

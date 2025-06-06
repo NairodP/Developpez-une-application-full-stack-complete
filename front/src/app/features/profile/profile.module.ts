@@ -1,14 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ProfileComponent } from './profile.component';
 
 const routes: Routes = [
-  // Les routes seront ajoutées ultérieurement
+  { path: '', component: ProfileComponent }
 ];
 
 @NgModule({
-  declarations: [],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  exports: [],
+  declarations: [ProfileComponent],
+  imports: [
+    CommonModule, 
+    RouterModule.forChild(routes),
+    ReactiveFormsModule
+  ],
+  exports: []
 })
 export class ProfileModule {}

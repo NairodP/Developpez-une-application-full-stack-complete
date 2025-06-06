@@ -1,0 +1,44 @@
+.posts-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.posts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.create-post-btn {
+  background-color: #7950dd;
+  color: white;
+  border-radius: 4px;
+}
+
+.sort-button {
+  display: flex;
+  align-items: center;
+  color: #333;
+  font-weight: 500;
+
+  mat-icon {
+    margin-left: 5px;
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 599px) {
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+}

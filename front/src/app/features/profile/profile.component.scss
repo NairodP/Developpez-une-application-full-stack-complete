@@ -1,0 +1,124 @@
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+
+  @media (min-width: 600px) {
+    padding: 2rem;
+  }
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  width: 100%;
+
+  h1 {
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: #333;
+    text-align: center;
+  }
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid #ffcdd2;
+}
+
+.success-message {
+  background-color: #e8f5e8;
+  color: #2e7d2e;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid #c8e6c9;
+}
+
+.profile-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .form-field {
+    width: 100%;
+    margin-bottom: 1.5rem;
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        border-color: #7950dd;
+        box-shadow: 0 0 0 2px rgba(121, 80, 221, 0.1);
+      }
+
+      &::placeholder {
+        color: #999;
+      }
+
+      &:invalid {
+        border-color: #f44336;
+      }
+    }
+  }
+
+  .save-button {
+    background-color: #7950dd;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    min-height: 42px;
+
+    &:hover:not(:disabled) {
+      background-color: #6940bb;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Styles spécifiques pour adapter à une version mobile
+@media (max-width: 599px) {
+  .profile-container {
+    padding: 1rem;
+  }
+
+  .profile-form {
+    .form-field {
+      margin-bottom: 1rem;
+
+      input {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+    }
+
+    .save-button {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+  }
+}
