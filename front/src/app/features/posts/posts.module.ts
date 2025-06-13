@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PostsListComponent } from './posts-list/posts-list.component';
 import { PostItemComponent } from './post-item/post-item.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import { PostDetailComponent } from './post-detail/post-detail.component';
 
 // Material imports
 import { MatButtonModule } from '@angular/material/button';
@@ -13,19 +14,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 const routes: Routes = [
   { path: '', component: PostsListComponent },
   { path: 'create', component: CreatePostComponent },
+  { path: ':id', component: PostDetailComponent },
 ];
 
 @NgModule({
   declarations: [
     PostsListComponent,
     PostItemComponent,
-    CreatePostComponent
+    CreatePostComponent,
+    PostDetailComponent
   ],
   imports: [
     CommonModule, 
@@ -38,7 +40,6 @@ const routes: Routes = [
     MatInputModule,
     MatSelectModule,
     MatDividerModule,
-    MatAutocompleteModule,
     MatFormFieldModule
   ],
   exports: [],

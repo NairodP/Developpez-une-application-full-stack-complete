@@ -3,45 +3,61 @@
     <h1>Profil utilisateur</h1>
   </div>
 
-  <div *ngIf="error" class="error-message">
-    {{ error }}
-  </div>
-
-  <div *ngIf="success" class="success-message">
-    {{ success }}
-  </div>
-
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
     <div class="form-field">
-      <input 
-        id="username" 
-        formControlName="username" 
+      <input
+        id="username"
+        formControlName="username"
         placeholder="Username"
         required>
     </div>
 
     <div class="form-field">
-      <input 
-        id="email" 
+      <input
+        id="email"
         type="email"
-        formControlName="email" 
+        formControlName="email"
         placeholder="email@email.fr"
         required>
     </div>
 
     <div class="form-field">
-      <input 
-        id="password" 
+      <input
+        id="password"
         type="password"
-        formControlName="password" 
+        formControlName="password"
         placeholder="Mot de passe">
     </div>
 
-    <button 
-      type="submit" 
-      [disabled]="profileForm.invalid || isLoading" 
+    <button
+      type="submit"
+      [disabled]="profileForm.invalid"
       class="save-button">
-      {{ isLoading ? 'Sauvegarde...' : 'Sauvegarder' }}
+      {{ 'Sauvegarder' }}
     </button>
   </form>
+
+  <div class="subscriptions-section">
+    <h2 class="subscriptions-title">Abonnements</h2>
+
+    <div *ngIf="userSubscriptions.length === 0" class="no-subscriptions">
+      P&s d'abonnements.
+    </div>
+
+    <div class="subscriptions-grid" *ngIf="userSubscriptions.length > 0">
+      <div *ngFor="let theme of userSubscriptions" class="subscription-card">
+        <div class="subscription-content">
+          <h3 class="subscription-title">{{ theme.name }}</h3>
+          <p class="subscription-description">{{ theme.description || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non lectus mauris nec imperdiet lorem tempor. Nullam commodo et urna vel pulvinar. Nullam in orci venenatis ex elit et ex.'  }}</p>
+        </div>
+        <div class="subscription-actions">
+          <button
+            class="unsubscribe-btn"
+            (click)="unsubscribeFromTheme(theme)">
+            Se désabonner
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

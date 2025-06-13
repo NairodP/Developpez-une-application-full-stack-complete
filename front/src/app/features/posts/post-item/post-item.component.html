@@ -1,4 +1,4 @@
-<div class="post-card">
+<div class="post-card" [routerLink]="['/posts', post.id]">
   <div class="post-header">
     <h3 class="post-title">{{ post.title }}</h3>
     <div class="post-metadata">
@@ -9,9 +9,5 @@
   
   <div class="post-content">
     <p>{{ post.content | slice:0:150 }}{{ post.content.length > 150 ? '...' : '' }}</p>
-  </div>
-  
-  <div class="post-footer">
-    <a [routerLink]="['/posts', post.id]" class="read-more">Lire la suite</a>
   </div>
 </div>

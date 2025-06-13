@@ -5,12 +5,12 @@ import { environment } from 'src/environments/environment';
 import { Theme } from '../models/post.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
   private apiUrl = `${environment.apiUrl}/themes`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAllThemes(): Observable<Theme[]> {
     return this.http.get<Theme[]>(this.apiUrl);

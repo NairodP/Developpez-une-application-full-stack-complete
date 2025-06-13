@@ -6,6 +6,15 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .post-header {
@@ -28,24 +37,12 @@
 
 .post-content {
   flex-grow: 1;
-  margin-bottom: 16px;
   font-size: 14px;
   line-height: 1.5;
   color: #444;
   overflow: hidden;
-}
 
-.post-footer {
-  text-align: right;
-}
-
-.read-more {
-  color: #7950dd;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 14px;
-  
-  &:hover {
-    text-decoration: underline;
+  p {
+    margin: 0;
   }
 }

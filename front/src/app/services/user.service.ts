@@ -27,12 +27,4 @@ export class UserService {
   updateCurrentUser(user: User): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/me`, user);
   }
-
-  followTheme(themeId: number): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/follow-theme/${themeId}`, {});
-  }
-
-  unfollowTheme(themeId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/follow-theme/${themeId}`);
-  }
 }

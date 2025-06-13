@@ -6,21 +6,21 @@
     <h1>Créer un nouvel article</h1>
   </div>
 
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
   <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="create-post-form">
     <div class="form-field">
-      <mat-form-field appearance="outline" class="theme-input">
-        <input type="text"
-               matInput
-               formControlName="themeName"
-               placeholder="Entrez ou sélectionnez un thème"
-               [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let theme of filteredThemes | async" [value]="theme.name">
-            {{theme.name}}
+      <mat-form-field appearance="outline" class="theme-select">
+        <mat-label>Thème</mat-label>
+        <mat-select formControlName="themeName">
+          <mat-option *ngFor="let theme of availableThemes" [value]="theme">
+            {{ theme }}
           </mat-option>
-        </mat-autocomplete>
+        </mat-select>
         <mat-error *ngIf="postForm.get('themeName')?.invalid">
-          Un thème est requis (minimum 2 caractères)
+          Un thème doit être sélectionné
         </mat-error>
       </mat-form-field>
     </div>

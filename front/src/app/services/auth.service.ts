@@ -50,6 +50,9 @@ export class AuthService {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
+    
+    // Vider les abonnements lors de la déconnexion
+    // Note: Nous utiliserons un service centralisé pour cela
   }
 
   isLoggedIn(): boolean {

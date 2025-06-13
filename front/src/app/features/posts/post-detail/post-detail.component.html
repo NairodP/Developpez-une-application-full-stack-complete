@@ -1,0 +1,51 @@
+<div class="post-detail-container">
+  <div class="post-header">
+    <button mat-icon-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="header-title" *ngIf="post">{{ post.title }}</h1>
+    <h1 class="header-title" *ngIf="!post">Titre de l'article sélectionné</h1>
+  </div>
+  <div *ngIf="post" class="post-content">
+    <div class="metadata-row">
+      <span class="metadata-item">{{ post.createdAt | date:'dd/MM/yyyy' }}</span>
+      <span class="metadata-item">{{ post.author?.username || 'Auteur' }}</span>
+      <span class="metadata-item">{{ post.theme?.name || 'Thème' }}</span>
+    </div>
+    <div class="post-body">
+      <p>{{ post.content }}</p>
+    </div>
+    <div class="comments-section">
+      <h2 class="comments-title">Commentaires</h2>
+      <div class="comments-list">
+        <div *ngFor="let comment of comments" class="comment-item">
+          <div class="comment-header">
+            <span class="comment-author">{{ comment.author?.username || 'username' }}</span>
+          </div>
+          <div class="comment-content">{{ comment.content }}</div>
+        </div>
+      </div>
+      <div class="add-comment-section">
+        <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()" class="comment-form">
+          <div class="comment-input-container">
+            <mat-form-field appearance="outline" class="comment-input">
+              <textarea
+                matInput
+                formControlName="content"
+                placeholder="Écrivez ici votre commentaire"
+                rows="3">
+              </textarea>
+            </mat-form-field>
+            <button
+              mat-icon-button
+              type="submit"
+              class="send-button"
+              [disabled]="commentForm.invalid || isSubmittingComment">
+              <mat-icon>send</mat-icon>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

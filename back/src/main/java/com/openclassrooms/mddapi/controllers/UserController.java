@@ -1,9 +1,7 @@
 package com.openclassrooms.mddapi.controllers;
 
 import com.openclassrooms.mddapi.dto.UserDto;
-import com.openclassrooms.mddapi.models.Theme;
 import com.openclassrooms.mddapi.models.User;
-import com.openclassrooms.mddapi.repositories.ThemeRepository;
 import com.openclassrooms.mddapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,13 +21,11 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserRepository userRepository;
-    private final ThemeRepository themeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserRepository userRepository, ThemeRepository themeRepository, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.themeRepository = themeRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -133,46 +129,6 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/follow-theme/{themeId}")
-    public ResponseEntity<Void> followTheme(@PathVariable Long themeId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        Optional<Theme> themeOpt = themeRepository.findById(themeId);
-
-        if (userOpt.isPresent() && themeOpt.isPresent()) {
-            User user = userOpt.get();
-            Theme theme = themeOpt.get();
-
-            user.getFollowedThemes().add(theme);
-            userRepository.save(user);
-
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.notFound().build();
-    }
-
-    @DeleteMapping("/follow-theme/{themeId}")
-    public ResponseEntity<Void> unfollowTheme(@PathVariable Long themeId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        Optional<Theme> themeOpt = themeRepository.findById(themeId);
-
-        if (userOpt.isPresent() && themeOpt.isPresent()) {
-            User user = userOpt.get();
-            Theme theme = themeOpt.get();
-
-            user.getFollowedThemes().remove(theme);
-            userRepository.save(user);
-
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.notFound().build();
-    }
-
     private UserDto convertToDto(User user) {
         UserDto dto = new UserDto();
         dto.setId(user.getId());
@@ -182,7 +138,7 @@ public class UserController {
         dto.setProfilePictureUrl(user.getProfilePictureUrl());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setFollowedThemeIds(user.getFollowedThemes().stream()
-                .map(Theme::getId)
+                .map(theme -> theme.getId())
                 .collect(Collectors.toSet()));
         return dto;
     }
