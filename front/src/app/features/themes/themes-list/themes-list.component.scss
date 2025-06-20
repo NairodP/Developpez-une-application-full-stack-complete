@@ -35,9 +35,10 @@
 
 .themes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px 20px;
   margin-top: 20px;
+  align-items: start;
 }
 
 .theme-card {
@@ -117,6 +118,13 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .themes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 20px;
+  }
+}
+
 // Styles responsifs
 @media (max-width: 768px) {
   .themes-container {
@@ -124,8 +132,8 @@
   }
 
   .themes-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px !important;
   }
 
   .theme-card {
@@ -145,5 +153,12 @@
     padding: 8px 16px;
     font-size: 13px;
     min-width: 100px;
+  }
+}
+
+@media (max-width: 599px) {
+  .themes-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
   }
 }

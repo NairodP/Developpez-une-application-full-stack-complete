@@ -117,9 +117,24 @@
 
 .subscriptions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px 20px;
   width: 100%;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .subscriptions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .subscriptions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px !important;
+  }
 }
 
 .subscription-card {
@@ -201,5 +216,10 @@
       padding: 10px 20px;
       font-size: 14px;
     }
+  }
+
+  .subscriptions-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
   }
 }
