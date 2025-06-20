@@ -13,6 +13,7 @@ export class AppComponent implements OnInit {
   isLoggedIn = false;
   isAuthPage = false;
   currentUser: User | null = null;
+  isMobileMenuOpen = false;
 
   constructor(
     private readonly authService: AuthService,
@@ -33,6 +34,8 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.isAuthPage = event.url.includes('/auth/login') || event.url.includes('/auth/register');
+        // Fermer le menu mobile lors de la navigation
+        this.isMobileMenuOpen = false;
       }
     });
   }
@@ -40,5 +43,13 @@ export class AppComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/']);
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
   }
 }

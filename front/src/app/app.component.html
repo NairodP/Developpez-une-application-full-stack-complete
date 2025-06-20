@@ -8,7 +8,8 @@
 
     <div class="toolbar-spacer"></div>
 
-    <div class="toolbar-links">
+    <!-- Menu desktop -->
+    <div class="toolbar-links desktop-menu">
       <button mat-button (click)="logout()" class="logout-btn">
         Se déconnecter
       </button>
@@ -26,6 +27,54 @@
       >
         <mat-icon>account_circle</mat-icon>
       </button>
+    </div>
+
+    <!-- Menu burger pour mobile -->
+    <button
+      mat-icon-button
+      class="mobile-menu-toggle"
+      (click)="toggleMobileMenu()"
+      aria-label="Ouvrir le menu"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+
+  <!-- Overlay pour fermer le menu mobile -->
+  <button 
+    *ngIf="isMobileMenuOpen" 
+    class="mobile-menu-overlay" 
+    (click)="closeMobileMenu()"
+    aria-label="Fermer le menu"
+  ></button>
+
+  <!-- Menu mobile -->
+  <div class="mobile-menu" [class.mobile-menu-open]="isMobileMenuOpen">
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-items">
+        <button mat-button (click)="logout()" class="logout-btn">
+          Se déconnecter
+        </button>
+        <button mat-button routerLink="/posts" routerLinkActive="active" (click)="closeMobileMenu()">
+          Articles
+        </button>
+        <button mat-button routerLink="/themes" routerLinkActive="active" (click)="closeMobileMenu()">
+          Thèmes
+        </button>
+      </div>
+      
+      <!-- Section du bas avec le profil -->
+      <div class="mobile-menu-bottom">
+        <button
+          mat-icon-button
+          routerLink="/profile"
+          class="mobile-profile-btn"
+          (click)="closeMobileMenu()"
+          aria-label="Ouvrir le profil"
+        >
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 </mat-toolbar>
