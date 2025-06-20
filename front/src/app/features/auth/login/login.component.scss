@@ -5,9 +5,18 @@
   margin: 0 auto;
   padding: 2rem 1rem;
   position: relative;
+  min-height: 100vh;
+  justify-content: center;
 
   @media (min-width: 600px) {
     padding: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    min-height: calc(100vh - 64px);
+    justify-content: flex-start;
+    padding-top: 3rem;
   }
 }
 
@@ -15,6 +24,22 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
+  z-index: 10;
+
+  @media (max-width: 768px) {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    
+    mat-icon {
+      font-size: 24px;
+      color: #333;
+    }
+  }
 }
 
 .login-header {
@@ -24,10 +49,21 @@
   margin-bottom: 2rem;
   width: 100%;
 
+  @media (max-width: 768px) {
+    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+  }
+
   h1 {
     font-weight: 500;
     margin-bottom: 1rem;
     color: #333;
+    font-size: 1.8rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
   }
 }
 
@@ -40,11 +76,19 @@
     width: 100%;
     margin-bottom: 1.5rem;
 
+    @media (max-width: 768px) {
+      margin-bottom: 1rem;
+    }
+
     label {
       display: block;
       margin-bottom: 0.5rem;
       font-size: 0.9rem;
       color: #666;
+
+      @media (max-width: 768px) {
+        font-size: 0.85rem;
+      }
     }
 
     input {
@@ -53,6 +97,12 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 1rem;
+      box-sizing: border-box;
+
+      @media (max-width: 768px) {
+        padding: 0.7rem;
+        font-size: 0.95rem;
+      }
 
       &:focus {
         outline: none;
@@ -64,6 +114,10 @@
       color: #f44336;
       font-size: 0.8rem;
       margin-top: 0.3rem;
+
+      @media (max-width: 768px) {
+        font-size: 0.75rem;
+      }
     }
   }
 
@@ -76,17 +130,56 @@
     color: white;
     border: none;
     cursor: pointer;
+    width: 100%;
+
+    @media (max-width: 768px) {
+      height: 48px;
+      font-size: 1rem;
+      margin: 1.5rem 0 1rem 0;
+      border-radius: 6px;
+    }
 
     &:disabled {
       background-color: #b39ddb;
       cursor: not-allowed;
     }
+
+    &:hover:not(:disabled) {
+      background-color: #5e35b1;
+    }
   }
 }
 
-// Styles spécifiques pour adapter à une version mobile
-@media (max-width: 599px) {
+// Responsive Design
+@media (max-width: 768px) {
+  .login-container {
+    max-width: 100%;
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
   .login-container {
     padding: 1rem;
+  }
+
+  .back-button {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .login-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .login-form {
+    .form-field {
+      margin-bottom: 1rem;
+    }
+    
+    .login-button {
+      height: 50px;
+      font-size: 1.1rem;
+    }
   }
 }
