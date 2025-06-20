@@ -6,6 +6,7 @@ import { Theme } from 'src/app/models/post.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { SubscriptionService } from 'src/app/services/subscription.service';
+import { PasswordValidator } from '../../validators/password.validator';
 
 @Component({
   selector: 'app-profile',
@@ -42,7 +43,7 @@ export class ProfileComponent implements OnInit {
     this.profileForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.minLength(6)]]
+      password: ['', [PasswordValidator.strongPassword()]]
     });
   }
 
@@ -113,5 +114,10 @@ export class ProfileComponent implements OnInit {
         console.error('Erreur lors du désabonnement', err);
       }
     });
+  }
+
+  getPasswordRequirements(): string[] {
+    const passwordControl = this.profileForm.get('password');
+    return passwordControl ? PasswordValidator.getPasswordRequirements(passwordControl) : [];
   }
 }

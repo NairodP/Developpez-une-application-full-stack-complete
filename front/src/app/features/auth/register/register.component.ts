@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/auth.service';
+import { PasswordValidator } from '../../../validators/password.validator';
 
 @Component({
   selector: 'app-register',
@@ -15,15 +16,15 @@ export class RegisterComponent implements OnInit {
   hidePassword = true;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private snackBar: MatSnackBar
+    private readonly formBuilder: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly snackBar: MatSnackBar
   ) {
     this.registerForm = this.formBuilder.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, PasswordValidator.strongPassword()]]
     });
   }
 
@@ -68,5 +69,10 @@ export class RegisterComponent implements OnInit {
 
   navigateToLogin(): void {
     this.router.navigate(['/auth/login']);
+  }
+
+  getPasswordRequirements(): string[] {
+    const passwordControl = this.registerForm.get('password');
+    return passwordControl ? PasswordValidator.getPasswordRequirements(passwordControl) : [];
   }
 }

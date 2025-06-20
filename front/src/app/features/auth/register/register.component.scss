@@ -69,9 +69,10 @@
 
   .register-button {
     height: 42px;
+    width: auto;
     font-size: 1rem;
     margin: 1rem 0;
-    border-radius: 21px;
+    border-radius: 4px;
     background-color: var(--primary-color);
     color: white;
     border: none;
@@ -80,6 +81,32 @@
     &:disabled {
       background-color: #b39ddb;
       cursor: not-allowed;
+    }
+  }
+
+  .password-requirements {
+    margin-top: 8px;
+    padding: 12px;
+    background-color: #ffeaea;
+    border-radius: 4px;
+    border: 1px solid #f44336;
+
+    .requirements-title {
+      color: #d32f2f;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0 0 8px 0;
+    }
+
+    .requirements-list {
+      margin: 0;
+      padding-left: 16px;
+      color: #d32f2f;
+      font-size: 13px;
+
+      li {
+        margin-bottom: 4px;
+      }
     }
   }
 }

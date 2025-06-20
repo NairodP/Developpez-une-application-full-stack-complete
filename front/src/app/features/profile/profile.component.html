@@ -27,6 +27,12 @@
         type="password"
         formControlName="password"
         placeholder="Mot de passe">
+      <div class="password-requirements" *ngIf="profileForm.get('password')?.value && profileForm.get('password')?.touched && getPasswordRequirements().length > 0">
+        <p class="requirements-title">Le mot de passe doit contenir :</p>
+        <ul class="requirements-list">
+          <li *ngFor="let requirement of getPasswordRequirements()">{{ requirement }}</li>
+        </ul>
+      </div>
     </div>
 
     <button

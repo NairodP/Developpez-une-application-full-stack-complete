@@ -3,6 +3,7 @@ package com.openclassrooms.mddapi.controllers;
 import com.openclassrooms.mddapi.dto.UserDto;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repositories.UserRepository;
+import com.openclassrooms.mddapi.validation.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -107,8 +108,12 @@ public class UserController {
             }
         }
         
-        // Mise à jour du mot de passe avec cryptage
+        // Mise à jour du mot de passe avec validation forte et cryptage
         if (userUpdate.getPassword() != null && !userUpdate.getPassword().trim().isEmpty()) {
+            if (!PasswordValidator.isValid(userUpdate.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial");
+            }
             existingUser.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
         }
         
@@ -134,8 +139,6 @@ public class UserController {
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        dto.setBio(user.getBio());
-        dto.setProfilePictureUrl(user.getProfilePictureUrl());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setFollowedThemeIds(user.getFollowedThemes().stream()
                 .map(theme -> theme.getId())

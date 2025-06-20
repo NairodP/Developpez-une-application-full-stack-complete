@@ -29,6 +29,11 @@ public class User {
     @Column(name = "date_inscription")
     private LocalDateTime createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
     @ManyToMany
     @JoinTable(
         name = "abonnement",
@@ -79,41 +84,12 @@ public class User {
         this.password = password;
     }
 
-    // Les méthodes firstName et lastName ne sont plus utilisées car nous avons maintenant un seul champ username
-
-    public String getBio() {
-        // Cette propriété n'est pas dans le schéma de BDD
-        return null;
-    }
-
-    public void setBio(String bio) {
-        // Cette méthode ne fait rien car la propriété n'existe pas en BDD
-    }
-
-    public String getProfilePictureUrl() {
-        // Cette propriété n'est pas dans le schéma de BDD
-        return null;
-    }
-
-    public void setProfilePictureUrl(String profilePictureUrl) {
-        // Cette méthode ne fait rien car la propriété n'existe pas en BDD
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        // Cette propriété n'est pas dans le schéma de BDD
-        return createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        // Cette méthode ne fait rien car la propriété n'existe pas en BDD
     }
 
     public Set<Theme> getFollowedThemes() {

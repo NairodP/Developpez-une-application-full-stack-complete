@@ -7,6 +7,7 @@ import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repositories.UserRepository;
 import com.openclassrooms.mddapi.security.JwtTokenUtil;
 import com.openclassrooms.mddapi.security.UserDetailsServiceImpl;
+import com.openclassrooms.mddapi.validation.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,6 +54,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody SignupRequest signupRequest) {
+        // Validation du mot de passe
+        if (!PasswordValidator.isValid(signupRequest.getPassword())) {
+            return ResponseEntity.badRequest().body(PasswordValidator.getValidationMessage());
+        }
+        
         // Vérifie si l'email est déjà utilisé
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             return ResponseEntity.badRequest().body("Email déjà utilisé");

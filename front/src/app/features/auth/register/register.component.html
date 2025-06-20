@@ -29,8 +29,11 @@
     <div class="form-field">
       <label for="password">Mot de passe</label>
       <input id="password" formControlName="password" [type]="hidePassword ? 'password' : 'text'" required>
-      <div class="error-message" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-        Le mot de passe doit contenir au moins 6 caractères
+      <div class="password-requirements" *ngIf="registerForm.get('password')?.touched && getPasswordRequirements().length > 0">
+        <p class="requirements-title">Le mot de passe doit contenir :</p>
+        <ul class="requirements-list">
+          <li *ngFor="let requirement of getPasswordRequirements()">{{ requirement }}</li>
+        </ul>
       </div>
     </div>
 
