@@ -4,17 +4,36 @@
   padding: 20px;
   background-color: white;
   min-height: 100vh;
+
+  @media (max-width: 768px) {
+    padding: 0;
+    max-width: 100%;
+  }
 }
 
 .post-header {
   display: flex;
   align-items: center;
   margin-bottom: 30px;
-  padding-bottom: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    margin-bottom: 0;
+    justify-content: center;
+  }
 
   .back-button {
     color: #333;
     margin-right: 16px;
+
+    @media (max-width: 768px) {
+      position: absolute;
+      left: 16px;
+      margin-right: 0;
+    }
   }
 
   .header-title {
@@ -23,6 +42,12 @@
     color: #333;
     margin: 0;
     flex: 1;
+
+    @media (max-width: 768px) {
+      font-size: 18px;
+      text-align: center;
+      flex: none;
+    }
   }
 }
 
@@ -45,6 +70,10 @@
 
 .post-content {
   background-color: white;
+
+  @media (max-width: 768px) {
+    padding: 20px 16px;
+  }
 }
 
 .metadata-row {
@@ -53,18 +82,44 @@
   margin-bottom: 24px;
   padding-bottom: 16px;
 
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
   .metadata-item {
     font-size: 14px;
     color: #666;
     flex: 1;
     text-align: center;
 
+    @media (max-width: 768px) {
+      flex: 0 0 calc(50% - 8px);
+      text-align: left;
+      font-size: 13px;
+
+      &:nth-child(3) {
+        flex: 0 0 100%;
+      }
+    }
+
     &:first-child {
       text-align: left;
+
+      @media (max-width: 768px) {
+        text-align: left;
+      }
     }
 
     &:last-child {
       text-align: right;
+
+      @media (max-width: 768px) {
+        text-align: left;
+      }
     }
   }
 }
@@ -87,6 +142,11 @@
 .comments-section {
   border-top: 1px solid #e0e0e0;
   padding-top: 24px;
+
+  @media (max-width: 768px) {
+    border-top: none;
+    padding-top: 20px;
+  }
 }
 
 .comments-title {
@@ -94,6 +154,11 @@
   font-weight: 600;
   color: #333;
   margin: 0 0 20px 0;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
 }
 
 .loading-comments {
@@ -114,6 +179,13 @@
   display: flex;
   gap: 12px;
 
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
   &:last-child {
     border-bottom: none;
   }
@@ -122,10 +194,19 @@
     width: 20%;
     flex-shrink: 0;
 
+    @media (max-width: 768px) {
+      width: 100%;
+      text-align: right;
+    }
+
     .comment-author {
       font-weight: 600;
       color: #333;
       font-size: 14px;
+
+      @media (max-width: 768px) {
+        font-size: 13px;
+      }
     }
   }
 
@@ -138,14 +219,33 @@
     padding: 12px;
     border-radius: 8px;
     margin: 0;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      background-color: #f5f5f5;
+      padding: 12px;
+      font-size: 13px;
+      border-radius: 8px;
+      box-sizing: border-box;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
   }
 }
 
 .comment-input-container {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 10px;
   margin-top: 16px;
+
+  @media (max-width: 768px) {
+    align-items: center;
+    gap: 12px;
+  }
 
   .comment-input {
     flex: 1;
@@ -153,6 +253,12 @@
     ::ng-deep .mat-mdc-form-field {
       .mat-mdc-text-field-wrapper {
         border-radius: 8px;
+      }
+
+      @media (max-width: 768px) {
+        .mat-mdc-text-field-wrapper {
+          border-radius: 20px;
+        }
       }
     }
   }
@@ -169,7 +275,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.25em;
+
+    @media (max-width: 768px) {
+      width: 48px;
+      height: 48px;
+    }
 
     mat-icon {
       font-size: 20px;
@@ -179,43 +289,4 @@
   }
 }
 
-@media (max-width: 768px) {
-  .post-detail-container {
-    padding: 15px;
-  }
 
-  .post-header {
-    .header-title {
-      font-size: 20px;
-    }
-  }
-
-  .metadata-row {
-    flex-direction: column;
-    text-align: left;
-
-    .metadata-item {
-      text-align: left !important;
-      margin-bottom: 8px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  .post-body {
-    font-size: 15px;
-  }
-
-  .comment-input-container {
-    flex-direction: column;
-    align-items: stretch;
-
-    .send-button {
-      align-self: flex-end;
-      margin-top: 12px;
-      margin-bottom: 0;
-    }
-  }
-}

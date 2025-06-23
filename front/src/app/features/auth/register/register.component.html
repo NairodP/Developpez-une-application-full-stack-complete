@@ -1,14 +1,22 @@
 <div class="register-container">
+  <!-- Bouton de retour en haut à gauche -->
   <div class="back-button">
     <button mat-icon-button routerLink="/">
       <mat-icon>arrow_back</mat-icon>
     </button>
   </div>
 
-  <div class="register-header">
+  <!-- Logo centré en haut -->
+  <div class="logo-section">
+    <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo" />
+  </div>
+
+  <!-- Titre centré -->
+  <div class="title-section">
     <h1>Inscription</h1>
   </div>
 
+  <!-- Formulaire -->
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
     <div class="form-field">
       <label for="username">Nom d'utilisateur</label>

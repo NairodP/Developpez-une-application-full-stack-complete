@@ -4,6 +4,13 @@
   position: relative;
 }
 
+// Masquer la auth-toolbar sur mobile
+.auth-toolbar {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
 .toolbar-container {
   display: flex;
   width: 100%;

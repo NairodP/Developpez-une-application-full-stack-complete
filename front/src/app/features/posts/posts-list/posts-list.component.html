@@ -3,9 +3,32 @@
     <button mat-raised-button color="primary" class="create-post-btn" routerLink="/posts/create">
       Créer un article
     </button>
-    <button mat-button class="sort-button">
-      Trier par <mat-icon>arrow_downward</mat-icon>
-    </button>
+    
+    <div class="sort-container">
+      <button 
+        mat-button 
+        class="sort-button" 
+        (click)="toggleSortMenu()">
+        Trier par
+        <mat-icon>arrow_downward</mat-icon>
+      </button>
+      
+      <div class="sort-menu" *ngIf="showSortMenu">
+        <button 
+          class="sort-menu-item" 
+          (click)="sortByNewest()"
+          [class.active]="currentSortOrder === 'desc'">
+          Plus récent
+        </button>
+        
+        <button 
+          class="sort-menu-item" 
+          (click)="sortByOldest()"
+          [class.active]="currentSortOrder === 'asc'">
+          Plus ancien
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="posts-grid">

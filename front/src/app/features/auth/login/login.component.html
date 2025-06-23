@@ -1,14 +1,22 @@
 <div class="login-container">
+  <!-- Bouton de retour en haut à gauche -->
   <div class="back-button">
     <button mat-icon-button routerLink="/">
       <mat-icon>arrow_back</mat-icon>
     </button>
   </div>
 
-  <div class="login-header">
+  <!-- Logo centré en haut -->
+  <div class="logo-section">
+    <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo" />
+  </div>
+
+  <!-- Titre centré -->
+  <div class="title-section">
     <h1>Se connecter</h1>
   </div>
 
+  <!-- Formulaire -->
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
     <div class="form-field">
       <label for="identifier">E-mail ou nom d'utilisateur</label>

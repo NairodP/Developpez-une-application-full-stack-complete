@@ -27,10 +27,10 @@ const routes: Routes = [
     PostsListComponent,
     PostItemComponent,
     CreatePostComponent,
-    PostDetailComponent
+    PostDetailComponent,
   ],
   imports: [
-    CommonModule, 
+    CommonModule,
     RouterModule.forChild(routes),
     FormsModule,
     ReactiveFormsModule,
@@ -40,7 +40,7 @@ const routes: Routes = [
     MatInputModule,
     MatSelectModule,
     MatDividerModule,
-    MatFormFieldModule
+    MatFormFieldModule,
   ],
   exports: [],
 })
