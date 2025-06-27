@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PostService } from 'src/app/services/post.service';
 import { CommentService } from 'src/app/services/comment.service';
 import { Post, Comment } from 'src/app/models/post.model';
@@ -12,13 +11,13 @@ import { Post, Comment } from 'src/app/models/post.model';
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.scss']
 })
-export class PostDetailComponent implements OnInit, OnDestroy {
+export class PostDetailComponent implements OnInit {
   post: Post | null = null;
   comments: Comment[] = [];
   commentForm!: FormGroup;
   isSubmittingComment = false;
   
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -31,11 +30,6 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.createCommentForm();
     this.loadPost();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   createCommentForm(): void {
@@ -52,9 +46,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     }
 
     this.postService.getPostById(+postId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (post) => {
+        next: (post: Post) => {
           this.post = post;
           this.loadComments(+postId);
         },
@@ -67,9 +61,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   loadComments(postId: number): void {
 
     this.commentService.getCommentsByPost(postId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (comments) => {
+        next: (comments: Comment[]) => {
           this.comments = comments;
         },
         error: (err) => {
@@ -90,9 +84,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     };
 
     this.commentService.createComment(this.post.id, commentData)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (newComment) => {
+        next: (newComment: Comment) => {
           this.comments.push(newComment);
           this.commentForm.reset();
           this.isSubmittingComment = false;

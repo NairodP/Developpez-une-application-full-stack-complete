@@ -8,9 +8,9 @@ import { Theme } from '../models/post.model';
   providedIn: 'root',
 })
 export class ThemeService {
-  private apiUrl = `${environment.apiUrl}/themes`;
+  private readonly apiUrl = `${environment.apiUrl}/themes`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getAllThemes(): Observable<Theme[]> {
     return this.http.get<Theme[]>(this.apiUrl);

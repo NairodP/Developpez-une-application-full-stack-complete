@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { User } from 'src/app/models/user.model';
 import { Theme } from 'src/app/models/post.model';
 import { AuthService } from 'src/app/services/auth.service';
@@ -15,12 +14,12 @@ import { PasswordValidator } from '../../validators/password.validator';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent implements OnInit {
   profileForm!: FormGroup;
   currentUser: User | null = null;
   userSubscriptions: Theme[] = [];
-
-  private readonly destroy$ = new Subject<void>();
+  
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -28,28 +27,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly subscriptionService: SubscriptionService,
     private readonly router: Router
-  ) {}
-
-  ngOnInit(): void {
+  ) {}  ngOnInit(): void {
     this.createForm();
     this.loadCurrentUser();
-
+    
     // S'abonner aux changements d'abonnements
     this.subscriptionService.userSubscriptions$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((themes: Theme[]) => {
         this.userSubscriptions = themes;
       });
-
+    
     // Charger les abonnements lors de l'initialisation
     this.subscriptionService.loadUserSubscriptions()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   createForm(): void {
@@ -62,9 +54,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   loadCurrentUser(): void {
     this.userService.getCurrentUser()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (user) => {
+        next: (user: User) => {
           this.currentUser = user;
           this.profileForm.patchValue({
             username: user.username,
@@ -100,9 +92,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     this.userService.updateCurrentUser(updateData)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (updatedUser) => {
+        next: (updatedUser: User) => {
           this.currentUser = updatedUser;
           this.profileForm.patchValue({ password: '' });
           this.authService.loadCurrentUser();
@@ -123,7 +115,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (!theme.id) return;
 
     this.subscriptionService.unsubscribeFromTheme(theme.id)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           // Les abonnements seront automatiquement mis à jour via le service

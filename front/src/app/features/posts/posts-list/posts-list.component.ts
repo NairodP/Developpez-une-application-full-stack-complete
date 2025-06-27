@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PostService } from 'src/app/services/post.service';
 import { Post } from 'src/app/models/post.model';
 
@@ -11,7 +10,7 @@ type SortOrder = 'asc' | 'desc';
   templateUrl: './posts-list.component.html',
   styleUrls: ['./posts-list.component.scss']
 })
-export class PostsListComponent implements OnInit, OnDestroy {
+export class PostsListComponent implements OnInit {
   posts: Post[] = [];
   originalPosts: Post[] = [];
   isLoading = false;
@@ -21,7 +20,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   currentSortOrder: SortOrder = 'desc'; // Le plus récent en premier par défaut
   showSortMenu = false;
   
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(private readonly postService: PostService) { }
 
@@ -29,19 +28,14 @@ export class PostsListComponent implements OnInit, OnDestroy {
     this.loadPosts();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   loadPosts(): void {
     this.isLoading = true;
     this.error = null;
 
     this.postService.getAllPosts()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (data) => {
+        next: (data: Post[]) => {
           this.originalPosts = [...data];
           this.posts = [...data];
           this.applySorting(); // Applique le tri par défaut (plus récent en premier)

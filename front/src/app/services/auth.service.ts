@@ -13,11 +13,11 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/auth`;
-  private currentUserSubject: BehaviorSubject<User | null>;
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
+  private readonly currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
 
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
     const storedUser = localStorage.getItem('currentUser');
     this.currentUserSubject = new BehaviorSubject<User | null>(
       storedUser ? JSON.parse(storedUser) : null
@@ -32,7 +32,7 @@ export class AuthService {
   login(loginData: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginData).pipe(
       tap((response) => {
-        if (response && response.token) {
+        if (response?.token) {
           localStorage.setItem('jwt_token', response.token);
           this.loadCurrentUser();
         }
@@ -50,7 +50,7 @@ export class AuthService {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    
+
     // Vider les abonnements lors de la déconnexion
     // Note: Nous utiliserons un service centralisé pour cela
   }

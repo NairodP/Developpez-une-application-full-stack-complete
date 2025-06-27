@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Post, Theme } from 'src/app/models/post.model';
 import { PostService } from 'src/app/services/post.service';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -12,14 +11,14 @@ import { ThemeService } from 'src/app/services/theme.service';
   templateUrl: './create-post.component.html',
   styleUrls: ['./create-post.component.scss']
 })
-export class CreatePostComponent implements OnInit, OnDestroy {
+export class CreatePostComponent implements OnInit {
   postForm!: FormGroup;
   availableThemes: Theme[] = [];
   isSubmitting = false;
   isLoadingThemes = false;
   error: string | null = null;
   
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -33,17 +32,12 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     this.loadThemes();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   loadThemes(): void {
     this.isLoadingThemes = true;
     this.themeService.getAllThemes()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (themes) => {
+        next: (themes: Theme[]) => {
           this.availableThemes = themes;
           this.isLoadingThemes = false;
         },
@@ -94,7 +88,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     };
 
     this.postService.createPost(postData)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (createdPost) => {
           this.isSubmitting = false;

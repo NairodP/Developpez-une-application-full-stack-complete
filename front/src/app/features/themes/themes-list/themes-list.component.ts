@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Theme } from 'src/app/models/post.model';
 import { ThemeService } from 'src/app/services/theme.service';
 import { SubscriptionService } from 'src/app/services/subscription.service';
@@ -12,13 +11,13 @@ import { User } from 'src/app/models/user.model';
   templateUrl: './themes-list.component.html',
   styleUrls: ['./themes-list.component.scss']
 })
-export class ThemesListComponent implements OnInit, OnDestroy {
+export class ThemesListComponent implements OnInit {
   themes: Theme[] = [];
   currentUser: User | null = null;
   isLoading = false;
   error: string | null = null;
   
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private readonly themeService: ThemeService,
@@ -30,19 +29,14 @@ export class ThemesListComponent implements OnInit, OnDestroy {
     this.loadCurrentUser();
     this.loadThemes();
     this.subscriptionService.loadUserSubscriptions()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   loadCurrentUser(): void {
     this.authService.currentUser
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user: User | null) => {
         this.currentUser = user;
       });
   }
@@ -52,9 +46,9 @@ export class ThemesListComponent implements OnInit, OnDestroy {
     this.error = null;
 
     this.themeService.getAllThemes()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (themes) => {
+        next: (themes: Theme[]) => {
           this.themes = themes;
           this.isLoading = false;
         },
@@ -77,7 +71,7 @@ export class ThemesListComponent implements OnInit, OnDestroy {
     
     if (isSubscribed) {
       this.subscriptionService.unsubscribeFromTheme(theme.id)
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             console.log(`Désabonné du thème ${theme.name}`);
@@ -89,7 +83,7 @@ export class ThemesListComponent implements OnInit, OnDestroy {
         });
     } else {
       this.subscriptionService.subscribeToTheme(theme.id)
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             console.log(`Abonné au thème ${theme.name}`);
