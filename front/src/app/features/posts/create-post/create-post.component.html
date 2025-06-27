@@ -14,15 +14,19 @@
     <div class="form-field">
       <mat-form-field appearance="outline" class="theme-select">
         <mat-label>Thème</mat-label>
-        <mat-select formControlName="themeName">
-          <mat-option *ngFor="let theme of availableThemes" [value]="theme">
-            {{ theme }}
+        <mat-select formControlName="themeId">
+          <mat-option *ngFor="let theme of availableThemes" [value]="theme.id">
+            {{ theme.name }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="postForm.get('themeName')?.invalid">
+        <mat-error *ngIf="postForm.get('themeId')?.invalid">
           Un thème doit être sélectionné
         </mat-error>
       </mat-form-field>
+      
+      <div *ngIf="isLoadingThemes" class="loading-themes">
+        Chargement des thèmes...
+      </div>
     </div>
 
     <div class="form-field">
@@ -44,8 +48,8 @@
     </div>
 
     <div class="form-actions">
-      <button mat-raised-button type="submit" [disabled]="postForm.invalid || isSubmitting">
-        Créer
+      <button mat-raised-button type="submit" [disabled]="postForm.invalid || isSubmitting || isLoadingThemes">
+        {{ isSubmitting ? 'Création...' : 'Créer' }}
       </button>
     </div>
   </form>

@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +21,6 @@ import java.util.Optional;
 @RequestMapping("/api/posts")
 @CrossOrigin(origins = "*")
 public class PostController {
-
-    private static final List<String> VALID_THEMES = Arrays.asList("data", "front", "back");
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -67,29 +64,20 @@ public class PostController {
         if (post.getTheme() != null && post.getTheme().getName() != null && !post.getTheme().getName().trim().isEmpty()) {
             String themeName = post.getTheme().getName().trim().toLowerCase();
             
-            // Vérifier que le thème est valide
-            if (!VALID_THEMES.contains(themeName)) {
-                return ResponseEntity.badRequest()
-                    .body("Thème incorrect. Le thème doit être \"data\" ou \"front\" ou \"back\".");
-            }
-            
-            // Chercher si le thème existe déjà
+            // Chercher si le thème existe en base de données
             Optional<Theme> existingTheme = themeRepository.findByName(themeName);
             
             if (existingTheme.isPresent()) {
                 // Utiliser le thème existant
                 post.setTheme(existingTheme.get());
             } else {
-                // Créer un nouveau thème
-                Theme newTheme = new Theme();
-                newTheme.setName(themeName);
-                newTheme.setDescription("Thème " + themeName);
-                Theme savedTheme = themeRepository.save(newTheme);
-                post.setTheme(savedTheme);
+                // Le thème n'existe pas en base de données
+                return ResponseEntity.badRequest()
+                    .body("Thème incorrect. Le thème '" + themeName + "' n'existe pas.");
             }
         } else {
             return ResponseEntity.badRequest()
-                .body("Thème obligatoire. Le thème doit être \"data\" ou \"front\" ou \"back\".");
+                .body("Un thème doit être sélectionné.");
         }
 
         Post savedPost = postRepository.save(post);

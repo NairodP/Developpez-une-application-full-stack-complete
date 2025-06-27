@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Post, Theme } from 'src/app/models/post.model';
 import { PostService } from 'src/app/services/post.service';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-create-post',
@@ -13,8 +14,9 @@ import { PostService } from 'src/app/services/post.service';
 })
 export class CreatePostComponent implements OnInit, OnDestroy {
   postForm!: FormGroup;
-  availableThemes = ['data', 'front', 'back'];
+  availableThemes: Theme[] = [];
   isSubmitting = false;
+  isLoadingThemes = false;
   error: string | null = null;
   
   private readonly destroy$ = new Subject<void>();
@@ -22,11 +24,13 @@ export class CreatePostComponent implements OnInit, OnDestroy {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly postService: PostService,
+    private readonly themeService: ThemeService,
     private readonly router: Router
   ) { }
 
   ngOnInit(): void {
     this.createForm();
+    this.loadThemes();
   }
 
   ngOnDestroy(): void {
@@ -34,16 +38,33 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  loadThemes(): void {
+    this.isLoadingThemes = true;
+    this.themeService.getAllThemes()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (themes) => {
+          this.availableThemes = themes;
+          this.isLoadingThemes = false;
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement des thèmes', err);
+          this.error = 'Erreur lors du chargement des thèmes';
+          this.isLoadingThemes = false;
+        }
+      });
+  }
+
   createForm(): void {
     this.postForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       content: ['', [Validators.required, Validators.minLength(10)]],
-      themeName: ['', [Validators.required]]
+      themeId: ['', [Validators.required]]
     });
   }
 
   onSubmit(): void {
-    if (this.postForm.invalid) {
+    if (this.postForm.invalid || this.isSubmitting) {
       return;
     }
 
@@ -53,16 +74,23 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     // Récupération des données du formulaire
     const formData = this.postForm.value;
     
-    // Création d'un objet thème avec le nom sélectionné
-    const theme: Theme = {
-      name: formData.themeName
-    };
+    // Trouver le thème sélectionné
+    const selectedTheme = this.availableThemes.find(theme => theme.id === Number(formData.themeId));
     
-    // Création de l'objet post avec le thème
+    if (!selectedTheme) {
+      this.error = 'Veuillez sélectionner un thème valide';
+      this.isSubmitting = false;
+      return;
+    }
+    
+    // Création de l'objet post avec le thème sélectionné
     const postData: Post = {
       title: formData.title,
       content: formData.content,
-      theme: theme
+      theme: {
+        id: selectedTheme.id,
+        name: selectedTheme.name
+      }
     };
 
     this.postService.createPost(postData)
@@ -74,7 +102,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Erreur lors de la création de l\'article', err);
-          this.error = err.error ?? 'Erreur lors de la création de l\'article';
+          this.error = err.error?.message ?? 'Erreur lors de la création de l\'article';
           this.isSubmitting = false;
         }
       });

@@ -19,16 +19,4 @@ export class ThemeService {
   getThemeById(id: number): Observable<Theme> {
     return this.http.get<Theme>(`${this.apiUrl}/${id}`);
   }
-
-  createTheme(theme: Theme): Observable<Theme> {
-    return this.http.post<Theme>(this.apiUrl, theme);
-  }
-
-  updateTheme(id: number, theme: Theme): Observable<Theme> {
-    return this.http.put<Theme>(`${this.apiUrl}/${id}`, theme);
-  }
-
-  deleteTheme(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
 }
