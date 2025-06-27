@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { User } from 'src/app/models/user.model';
 import { Theme } from 'src/app/models/post.model';
 import { AuthService } from 'src/app/services/auth.service';
@@ -13,10 +15,12 @@ import { PasswordValidator } from '../../validators/password.validator';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   profileForm!: FormGroup;
   currentUser: User | null = null;
   userSubscriptions: Theme[] = [];
+
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -29,14 +33,23 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     this.loadCurrentUser();
-    
+
     // S'abonner aux changements d'abonnements
-    this.subscriptionService.userSubscriptions$.subscribe((themes: Theme[]) => {
-      this.userSubscriptions = themes;
-    });
-    
+    this.subscriptionService.userSubscriptions$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((themes: Theme[]) => {
+        this.userSubscriptions = themes;
+      });
+
     // Charger les abonnements lors de l'initialisation
-    this.subscriptionService.loadUserSubscriptions().subscribe();
+    this.subscriptionService.loadUserSubscriptions()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   createForm(): void {
@@ -48,19 +61,21 @@ export class ProfileComponent implements OnInit {
   }
 
   loadCurrentUser(): void {
-    this.userService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.currentUser = user;
-        this.profileForm.patchValue({
-          username: user.username,
-          email: user.email,
-          password: '' // Ne pas pré-remplir le mot de passe
-        });
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement du profil', err);
-      }
-    });
+    this.userService.getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user) => {
+          this.currentUser = user;
+          this.profileForm.patchValue({
+            username: user.username,
+            email: user.email,
+            password: '' // Ne pas pré-remplir le mot de passe
+          });
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement du profil', err);
+        }
+      });
   }
 
   onSubmit(): void {
@@ -84,16 +99,18 @@ export class ProfileComponent implements OnInit {
       updateData.password = formData.password;
     }
 
-    this.userService.updateCurrentUser(updateData).subscribe({
-      next: (updatedUser) => {
-        this.currentUser = updatedUser;
-        this.profileForm.patchValue({ password: '' });
-        this.authService.loadCurrentUser();
-      },
-      error: (err) => {
-        console.error('Erreur lors de la mise à jour du profil', err);
-      }
-    });
+    this.userService.updateCurrentUser(updateData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updatedUser) => {
+          this.currentUser = updatedUser;
+          this.profileForm.patchValue({ password: '' });
+          this.authService.loadCurrentUser();
+        },
+        error: (err) => {
+          console.error('Erreur lors de la mise à jour du profil', err);
+        }
+      });
   }
 
   logout(): void {
@@ -105,15 +122,17 @@ export class ProfileComponent implements OnInit {
   unsubscribeFromTheme(theme: Theme): void {
     if (!theme.id) return;
 
-    this.subscriptionService.unsubscribeFromTheme(theme.id).subscribe({
-      next: () => {
-        // Les abonnements seront automatiquement mis à jour via le service
-        console.log(`Désabonné du thème ${theme.name}`);
-      },
-      error: (err: any) => {
-        console.error('Erreur lors du désabonnement', err);
-      }
-    });
+    this.subscriptionService.unsubscribeFromTheme(theme.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          // Les abonnements seront automatiquement mis à jour via le service
+          console.log(`Désabonné du thème ${theme.name}`);
+        },
+        error: (err: any) => {
+          console.error('Erreur lors du désabonnement', err);
+        }
+      });
   }
 
   getPasswordRequirements(): string[] {

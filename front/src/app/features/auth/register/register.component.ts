@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { PasswordValidator } from '../../../validators/password.validator';
 
@@ -10,10 +12,12 @@ import { PasswordValidator } from '../../../validators/password.validator';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   isLoading = false;
   hidePassword = true;
+  
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -35,6 +39,11 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   onSubmit(): void {
     if (this.registerForm.invalid) {
       return;
@@ -47,24 +56,26 @@ export class RegisterComponent implements OnInit {
       password: this.registerForm.value.password
     };
 
-    this.authService.register(signupData).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        this.snackBar.open('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'Fermer', {
-          duration: 5000
-        });
-        this.router.navigate(['/auth/login']);
-      },
-      error: error => {
-        this.isLoading = false;
-        // Vérifier si l'erreur est un message du serveur
-        const errorMessage = error.error ?? 'Échec de l\'inscription. Veuillez réessayer.';
-        this.snackBar.open(errorMessage, 'Fermer', {
-          duration: 3000
-        });
-        console.error('Erreur d\'inscription', error);
-      }
-    });
+    this.authService.register(signupData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.snackBar.open('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'Fermer', {
+            duration: 5000
+          });
+          this.router.navigate(['/auth/login']);
+        },
+        error: error => {
+          this.isLoading = false;
+          // Vérifier si l'erreur est un message du serveur
+          const errorMessage = error.error ?? 'Échec de l\'inscription. Veuillez réessayer.';
+          this.snackBar.open(errorMessage, 'Fermer', {
+            duration: 3000
+          });
+          console.error('Erreur d\'inscription', error);
+        }
+      });
   }
 
   navigateToLogin(): void {

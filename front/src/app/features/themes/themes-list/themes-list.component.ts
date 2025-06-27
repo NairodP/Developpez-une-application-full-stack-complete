@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Theme } from 'src/app/models/post.model';
 import { ThemeService } from 'src/app/services/theme.service';
 import { SubscriptionService } from 'src/app/services/subscription.service';
@@ -10,11 +12,13 @@ import { User } from 'src/app/models/user.model';
   templateUrl: './themes-list.component.html',
   styleUrls: ['./themes-list.component.scss']
 })
-export class ThemesListComponent implements OnInit {
+export class ThemesListComponent implements OnInit, OnDestroy {
   themes: Theme[] = [];
   currentUser: User | null = null;
   isLoading = false;
   error: string | null = null;
+  
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly themeService: ThemeService,
@@ -25,30 +29,41 @@ export class ThemesListComponent implements OnInit {
   ngOnInit(): void {
     this.loadCurrentUser();
     this.loadThemes();
-    this.subscriptionService.loadUserSubscriptions().subscribe();
+    this.subscriptionService.loadUserSubscriptions()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadCurrentUser(): void {
-    this.authService.currentUser.subscribe(user => {
-      this.currentUser = user;
-    });
+    this.authService.currentUser
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+      });
   }
 
   loadThemes(): void {
     this.isLoading = true;
     this.error = null;
 
-    this.themeService.getAllThemes().subscribe({
-      next: (themes) => {
-        this.themes = themes;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des thèmes', err);
-        this.error = 'Une erreur est survenue lors du chargement des thèmes.';
-        this.isLoading = false;
-      }
-    });
+    this.themeService.getAllThemes()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (themes) => {
+          this.themes = themes;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement des thèmes', err);
+          this.error = 'Une erreur est survenue lors du chargement des thèmes.';
+          this.isLoading = false;
+        }
+      });
   }
 
   isUserSubscribed(themeId: number): boolean {
@@ -61,25 +76,29 @@ export class ThemesListComponent implements OnInit {
     const isSubscribed = this.isUserSubscribed(theme.id);
     
     if (isSubscribed) {
-      this.subscriptionService.unsubscribeFromTheme(theme.id).subscribe({
-        next: () => {
-          console.log(`Désabonné du thème ${theme.name}`);
-        },
-        error: (err: any) => {
-          console.error('Erreur lors du désabonnement', err);
-          this.error = 'Erreur lors du désabonnement au thème';
-        }
-      });
+      this.subscriptionService.unsubscribeFromTheme(theme.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            console.log(`Désabonné du thème ${theme.name}`);
+          },
+          error: (err: any) => {
+            console.error('Erreur lors du désabonnement', err);
+            this.error = 'Erreur lors du désabonnement au thème';
+          }
+        });
     } else {
-      this.subscriptionService.subscribeToTheme(theme.id).subscribe({
-        next: () => {
-          console.log(`Abonné au thème ${theme.name}`);
-        },
-        error: (err: any) => {
-          console.error('Erreur lors de l\'abonnement', err);
-          this.error = 'Erreur lors de l\'abonnement au thème';
-        }
-      });
+      this.subscriptionService.subscribeToTheme(theme.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            console.log(`Abonné au thème ${theme.name}`);
+          },
+          error: (err: any) => {
+            console.error('Erreur lors de l\'abonnement', err);
+            this.error = 'Erreur lors de l\'abonnement au thème';
+          }
+        });
     }
   }
 }

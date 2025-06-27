@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { PostService } from 'src/app/services/post.service';
 import { Post } from 'src/app/models/post.model';
 
@@ -9,7 +11,7 @@ type SortOrder = 'asc' | 'desc';
   templateUrl: './posts-list.component.html',
   styleUrls: ['./posts-list.component.scss']
 })
-export class PostsListComponent implements OnInit {
+export class PostsListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   originalPosts: Post[] = [];
   isLoading = false;
@@ -18,6 +20,8 @@ export class PostsListComponent implements OnInit {
   // Propriétés pour le tri par date
   currentSortOrder: SortOrder = 'desc'; // Le plus récent en premier par défaut
   showSortMenu = false;
+  
+  private readonly destroy$ = new Subject<void>();
 
   constructor(private readonly postService: PostService) { }
 
@@ -25,23 +29,30 @@ export class PostsListComponent implements OnInit {
     this.loadPosts();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadPosts(): void {
     this.isLoading = true;
     this.error = null;
 
-    this.postService.getAllPosts().subscribe({
-      next: (data) => {
-        this.originalPosts = [...data];
-        this.posts = [...data];
-        this.applySorting(); // Applique le tri par défaut (plus récent en premier)
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des articles', err);
-        this.error = 'Une erreur est survenue lors du chargement des articles.';
-        this.isLoading = false;
-      }
-    });
+    this.postService.getAllPosts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.originalPosts = [...data];
+          this.posts = [...data];
+          this.applySorting(); // Applique le tri par défaut (plus récent en premier)
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement des articles', err);
+          this.error = 'Une erreur est survenue lors du chargement des articles.';
+          this.isLoading = false;
+        }
+      });
   }
 
   /**

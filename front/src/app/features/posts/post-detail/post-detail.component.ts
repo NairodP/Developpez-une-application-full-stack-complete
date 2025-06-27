@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { PostService } from 'src/app/services/post.service';
 import { CommentService } from 'src/app/services/comment.service';
 import { Post, Comment } from 'src/app/models/post.model';
@@ -10,11 +12,13 @@ import { Post, Comment } from 'src/app/models/post.model';
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.scss']
 })
-export class PostDetailComponent implements OnInit {
+export class PostDetailComponent implements OnInit, OnDestroy {
   post: Post | null = null;
   comments: Comment[] = [];
   commentForm!: FormGroup;
   isSubmittingComment = false;
+  
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -27,6 +31,11 @@ export class PostDetailComponent implements OnInit {
   ngOnInit(): void {
     this.createCommentForm();
     this.loadPost();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   createCommentForm(): void {
@@ -42,27 +51,31 @@ export class PostDetailComponent implements OnInit {
       return;
     }
 
-    this.postService.getPostById(+postId).subscribe({
-      next: (post) => {
-        this.post = post;
-        this.loadComments(+postId);
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement de l\'article', err);
-      }
-    });
+    this.postService.getPostById(+postId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (post) => {
+          this.post = post;
+          this.loadComments(+postId);
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement de l\'article', err);
+        }
+      });
   }
 
   loadComments(postId: number): void {
 
-    this.commentService.getCommentsByPost(postId).subscribe({
-      next: (comments) => {
-        this.comments = comments;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des commentaires', err);
-      }
-    });
+    this.commentService.getCommentsByPost(postId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (comments) => {
+          this.comments = comments;
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement des commentaires', err);
+        }
+      });
   }
 
   onSubmitComment(): void {
@@ -76,17 +89,19 @@ export class PostDetailComponent implements OnInit {
       content: this.commentForm.value.content
     };
 
-    this.commentService.createComment(this.post.id, commentData).subscribe({
-      next: (newComment) => {
-        this.comments.push(newComment);
-        this.commentForm.reset();
-        this.isSubmittingComment = false;
-      },
-      error: (err) => {
-        console.error('Erreur lors de la création du commentaire', err);
-        this.isSubmittingComment = false;
-      }
-    });
+    this.commentService.createComment(this.post.id, commentData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (newComment) => {
+          this.comments.push(newComment);
+          this.commentForm.reset();
+          this.isSubmittingComment = false;
+        },
+        error: (err) => {
+          console.error('Erreur lors de la création du commentaire', err);
+          this.isSubmittingComment = false;
+        }
+      });
   }
 
   goBack(): void {
